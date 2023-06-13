@@ -1,38 +1,95 @@
-.App {
-  text-align: center;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+/* Custom styles */
+body {
+  @apply flex justify-center items-center h-screen;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.btn {
+  @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.popup {
+  @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 border border-gray-300 shadow-lg w-2/3 h-3/4
+  overflow-y-auto max-h-full  scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-blue-200;
+  
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.row-container {
+  @apply flex justify-center items-center h-1/5  mx-auto;
+}
+
+.row-left {
+  @apply w-4/5  p-4 h-20;
+}
+
+.row-left .comment {
+  @apply flex items-center;
+}
+
+.row-left .avatar {
+  @apply w-12 h-12 rounded-full bg-gray-300;
+}
+
+.row-left .info {
+  @apply ml-4;
+}
+
+.row-left .username {
+  @apply text-black font-bold;
+}
+
+.row-left .content {
+  @apply text-black;
+}
+
+.row-right {
+  @apply w-2/5  h-20;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+}
+.row-right .star {
+  font-size: 24px;
+  color: #ccc;
+  margin-right: 4px;
 }
 
-.App-link {
-  color: #61dafb;
+.row-right .star-filled {
+  color: yellow;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.star-rating {
+  margin-top: 10px;
 }
+
+.login-btn {
+  margin-top: 20px;
+}
+.input-container {
+  @apply flex justify-center items-center h-32   mx-auto;
+}
+.input-left {
+  @apply  w-3/4
+}
+.input-right {
+  @apply  w-1/4 flex items-center justify-center
+}
+.rating-input{
+  @apply w-1/2
+}
+.select{
+  @apply border border-gray-400 rounded py-2 px-4 mr-2 w-2/3
+}
+.textarea {
+ @apply w-full h-24
+  
+}
+.comment-button {
+  @apply flex-shrink-0 w-full py-2  text-teal-500 border-none cursor-pointer text-4xl
+}
+
+

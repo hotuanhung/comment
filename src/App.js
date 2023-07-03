@@ -1,19 +1,16 @@
-
 import React from 'react';
 import './App.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+
 
 class App extends React.Component {
   constructor() {
     super();
     this.state = {
-      isPopupOpen: false,
-      isLoggedIn: false,
-      commentClicked: false,
-      selectedComment: '',
-      selectedRating: null, // Thêm trạng thái để lưu trữ giá trị rating
-      placeholder: 'Enter your comment...', // Thêm state để lưu trữ giá trị của placeholder
+      page1: false,
+      page2: false,
+      resend: false, 
+      showButton: true, // Thêm trạng thái showButton để điều khiển hiển thị của nút
+      countdown: 300,
     };
     this.popupRef = React.createRef();
   }
@@ -28,323 +25,110 @@ class App extends React.Component {
 
   togglePopup = () => {
     this.setState((prevState) => ({
-      isPopupOpen: !prevState.isPopupOpen,
+      page1: !prevState.page1,
+      showButton: false, // Ẩn nút khi togglePopup được gọi
     }));
-  }
+  };
 
   handleClickOutside = (event) => {
     if (this.popupRef.current && !this.popupRef.current.contains(event.target)) {
       this.setState({
-        isPopupOpen: false,
+        page1: false,
+        showButton: true, // Hiển thị lại nút khi nhấp vào bên ngoài popup
       });
     }
-  }
+  };
 
-  handleLogin = () => {
-    this.setState({
-      isLoggedIn: true,
-    });
-  }
+  startCountdown = () => {
+    // Bắt đầu đếm ngược
+    this.setState({ countdown: 300, resend: false });
 
-  handleRowClick = (content,rating ) => {
-    this.setState({
-      selectedComment: content,
-      commentClicked: true,
-      selectedRating: rating,
-    });
-  }
+    this.countdownInterval = setInterval(() => {
+      this.setState((prevState) => ({
+        countdown: prevState.countdown - 1,
+      }));
 
-  handleChange = (event) => {
-    this.setState({
-      selectedComment: event.target.value,
-    });
-  }
+      if (this.state.countdown === 0) {
+        clearInterval(this.countdownInterval);
+        this.setState({ resend: true });
+      }
+    }, 1000);
+  };
 
   render() {
-    const { isPopupOpen, isLoggedIn, commentClicked, selectedComment, placeholder,selectedRating } = this.state;
-    const rating = 4;
+    const { page1,  countdown,resend , showButton } = this.state;
 
     return (
       <div>
-        <div className="button-container">
-          <button onClick={this.togglePopup} className="btn">
-            Click Me!
-          </button>
-          <button onClick={this.handleLogin} className="btn">
-            Login
-          </button>
-        </div>
-        {isPopupOpen && (
-          <div ref={this.popupRef} className="popup">
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
+        {showButton && ( // Hiển thị nút nếu showButton là true
+          <div className="button-container">
+            <button onClick={this.togglePopup} className="btn">
+              Page 1 
+            </button>
+          </div>
+        )}
+        {page1 && (
+          <div className="popup" ref={this.popupRef}>
+            <div className="popupcontainer">
+              <div className="titlecontainer">
+                <h1 className="titletext">Forgot password?</h1>
               </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
 
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
+              <div className="popupmain">
+                <form>
+                  <div className="popupmainform">
+                    <div>
+                      <label htmlFor="email" className="mail">
+                        Email address
+                      </label>
+                      <div className="inputcontainer">
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          className="input"
+                          required
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="email" className="mail">
+                        Password 
+                      </label>
+                      <div className="inputcontainer">
+                        <input
+                          
+                          id="password"
+                          name="password"
+                          className="input"
+                          required
+                        />
+                      </div>
+                    </div>
 
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
+                    {countdown > 0 && (
+                      <p className="subtext">
+                        {countdown} seconds
+                      </p>
+                    )}
 
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
+                    
 
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="row-container" onClick={() => this.handleRowClick('This is a comment from the user',rating)}>
-              <div className="row-left">
-                <div className="comment">
-                  <div className="avatar"></div>
-                  <div className="info">
-                    <span className="username">John Doe</span>
-                    <p className="content">This is a comment from the user</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row-right">
-                {[1, 2, 3, 4, 5].map((star, index) => (
-                  <i
-                    key={index}
-                    className={`fas fa-star ${star <= rating ? 'star-filled' : ''}`}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            {/* Các row-container khác */}
-            
-            {isLoggedIn && (
-              <div className="input-container">
-                <div className="input-left">
-                  <textarea
-                    placeholder={placeholder}
-                    className="textarea"
-                    value={commentClicked ? selectedComment : ''}
-                    onChange={this.handleChange}
-                  />
-                </div>
-                <div className="input-right">
-                  <div className="rating-input">
-                    <select className="select" value={selectedRating}>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                    </select>
-                    <button className="comment-button">
-                      <FontAwesomeIcon icon={faPaperPlane} />
+                    <button
+                      type="submit"
+                      className="buttonsubmit"
+                      onClick={this.startCountdown}
+                    >
+                      {resend ? 'Resend' : 'Reset password'}
                     </button>
-                  </div>
-                </div>
-              </div>
-                )}
 
+
+
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -353,3 +137,4 @@ class App extends React.Component {
 }
 
 export default App;
+
